@@ -1,0 +1,19 @@
+name: deployEcommApp to TomcatServer-GithubActions
+on:
+  push:
+     branches: [ "master" ]
+jobs: 
+  build:
+     runs-on: ubuntu-latest
+     steps:
+     - uses: actions/checkout@v4
+     - name: Setup jdk 17
+     - uses: actions/setup-java@v4
+       with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+     - name: Build with maven
+       run: mvn -B package --file pom.xml
+     - name: deploy ecomm to tomcatserver-running inside Ec2
+       run: curl -V -U admin:admin -T /home/runner/work/Ecomm-App-Server/Ecomm-App-Server/target/Ecomm.war 'https://13.201.0.240:8080//manager/text/depoly?path=/Ecomm.war'
